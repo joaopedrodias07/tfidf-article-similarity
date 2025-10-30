@@ -1,0 +1,191 @@
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais ABNT
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{times} % Fonte Times New Roman
+
+% Margens e espaçamento conforme ABNT (NBR 14724)
+\geometry{
+    left=3cm,
+    right=2cm,
+    top=3cm,
+    bottom=2cm
+}
+\onehalfspacing % Espaçamento 1,5
+\setlength{\parindent}{1.25cm} % Recuo de parágrafo ABNT
+\setlength{\parskip}{0pt} % Sem espaço entre parágrafos
+
+% Remover "Capítulo" e ajustar espaçamento entre seções
+\titleformat{\section}{\bfseries\normalsize\uppercase}{\thesection}{1em}{}
+\titleformat{\subsection}{\bfseries\normalsize}{\thesubsection}{1em}{}
+\titlespacing*{\section}{0pt}{1.5em}{1em}
+\titlespacing*{\subsection}{0pt}{1em}{0.5em}
+
+% Configuração de links
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\begin{document}
+
+% CAPA (modelo ABNT adaptado)
+\begin{titlepage}
+    \centering
+    {\large \textbf{CENTRO PAULA SOUZA}}\\
+    {\large \textbf{FACULDADE DE TECNOLOGIA DE SANTOS – FATEC RUBENS LARA}}\\[4cm]
+
+    {\bfseries\LARGE SISTEMA DE BUSCA E ANÁLISE DE SIMILARIDADE ENTRE ARTIGOS CIENTÍFICOS COM TF-IDF E PCA}\\[3cm]
+
+    {\large \textbf{JOÃO PEDRO DIAS}}\\[4cm]
+
+    {\large Santos – SP}\\
+    {\large \today}
+\end{titlepage}
+
+% SUMÁRIO
+\renewcommand{\contentsname}{Sumário}
+\tableofcontents
+\newpage
+
+% INTRODUÇÃO
+\section*{Introdução}
+\addcontentsline{toc}{section}{Introdução}
+O presente trabalho tem como objetivo desenvolver um sistema de busca e análise de similaridade entre artigos científicos utilizando técnicas de Processamento de Linguagem Natural \textit{(PLN)}. Foram aplicados conceitos de vetorização de textos com \textit{TF-IDF}, cálculo de similaridade de cosseno, redução de dimensionalidade por \textit{PCA} e visualização tridimensional dos vetores. Como resultado, o sistema é capaz de identificar os artigos mais semelhantes a uma consulta textual (\textit{query}) e exibir suas similaridades, ângulos e resumos, além de representá-los graficamente em um espaço 3D.
+
+% DESCRIÇÃO DO DATASET
+\section{Descrição do Dataset}
+O conjunto de dados utilizado foi obtido no \textit{Kaggle}, no repositório \textit{"Topic Modeling for Research Articles"}. O dataset contém milhares de artigos científicos, cada um com título, resumo e o tema relacionado. Neste projeto, foram utilizados os campos de título e resumo, sendo aplicadas técnicas de pré-processamento para limpeza textual e extração de termos relevantes para a análise de similaridade.
+
+% ESTRUTURA E FUNCIONAMENTO
+\section{Estrutura e Funcionamento do Sistema}
+O sistema foi implementado em Python, em um ambiente do Google Colab e estruturado em diferentes etapas. A seguir, cada parte do código é explicada com base nos principais blocos apresentados no \textit{notebook}.
+
+\subsection{Importação das Bibliotecas}
+Nesta etapa, foram importadas as bibliotecas essenciais para o desenvolvimento do sistema, incluindo:
+\begin{itemize}
+    \item Manipulação de dados: \textit{pandas}, \textit{numpy};
+    \item Processamento de texto: \textit{nltk}, \textit{re};
+    \item Cálculo de TF-IDF e similaridade de cosseno: \textit{scikit-learn};
+    \item Visualização dos vetores: \textit{matplotlib}.
+\end{itemize}
+
+Além disso, foi realizado a instalação dos recursos do \textit{NLTK}, como o \textit{tokenizador} e as \textit{stopwords}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{01_importacao_bibliotecas.png}
+    \caption{Importação das bibliotecas e instalação dos recursos do NLTK.}
+\end{figure}
+
+\subsection{Carregamento e Preparação dos Dados}
+O conjunto de dados foi carregado, contendo as colunas \textbf{TITLE} e \textbf{ABSTRACT}. Em seguida, foi criada uma nova coluna denominada \textbf{TEXT}, que une ambas as informações, ampliando o contexto disponível para o cálculo de similaridade.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{02_carregamento_dataset.png}
+    \includegraphics[width=0.9\textwidth]{carregamento_e_visu_data_set.png}
+    \includegraphics[width=0.9\textwidth]{concat_colunas.png}
+    \caption{Carregamento do dataset e criação de nova coluna \texttt{TEXT}.}
+\end{figure}
+
+\subsection{Pré-processamento dos Textos}
+Foram aplicadas transformações para limpar e normalizar os textos, facilitando o cálculo de similaridade. As etapas incluem: conversão para minúsculas, remoção de pontuação (mantendo hífen), eliminação de espaços extras, \textit{tokenização}(divide o texto em palavras ), remoção de \textit{stopwords}(elimina palavras comuns) e \textit{stemming}(reduz palavras à sua forma base).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{03_preprocessamento.png}
+    \caption{Aplicamento da função de pré-processamento dos textos.}
+\end{figure}
+
+\subsection{Aplicação do TF-IDF}
+Após o pré-processamento, aplicou-se o método TF-IDF (Term Frequency–Inverse Document Frequency), que transforma cada documento em um vetor numérico, permitindo mensurar a relevância dos termos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{04_calculo_matrix_tfidf.png}
+    \caption{Vetorização dos textos utilizando TF-IDF.}
+\end{figure}
+
+\subsection{Função de Busca e Visualização 3D}
+A função implementada realiza a busca de artigos com base em uma \textit{query}, utilizando TF-IDF e similaridade de cosseno, além de gerar uma visualização tridimensional interativa dos vetores.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{05_funcao_busca_artigo_pt1.png}
+    \includegraphics[width=0.9\textwidth]{06_funcao_busca_artigo_pt2.png}
+    \caption{Função principal de busca e geração de visualização 3D.}
+\end{figure}
+
+\subsection{Execução de Consultas Interativas}
+Por fim, foi implementado um \textit{loop} que permite ao usuário realizar consultas diretamente no terminal. O programa é encerrado quando o usuário digita "sair", "exit" ou "quit".
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{07_interface_terminal.png}
+    \caption{Loop interativo para consultas.}
+\end{figure}
+
+% RESULTADOS
+\section{Resultados}
+A seguir, são apresentados exemplos de consultas realizadas no sistema e suas respectivas saídas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{08_resultado1_da_busca.png}
+    \caption{Resultados da busca 1 (consulta: \textit{hyperparameter tuning machine learning models}).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{09_resultado2_da_busca.png}
+    \caption{Resumo do artigo mais relevante.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{10_resultado3_da_busca.png}
+    \caption{Visualização 3D dos vetores da consulta e artigos mais similares.}
+\end{figure}
+
+Observa-se que os resultados retornaram artigos relacionados à otimização de hiperparâmetros, apresentando valores de similaridade entre 0.38 e 0.48. O resumo exibido demonstra coerência temática com a consulta, reforçando a eficácia do modelo em identificar artigos semanticamente relevantes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{11_resultado1_da_busca2.png}
+    \caption{Resultados da busca 2 (consulta: \textit{regularization lasso linear regression}).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{12_resultado2_da_busca2.png}
+    \caption{Resumo do artigo mais relevante.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{13_resultado3_da_busca2.png}
+    \caption{Visualização 3D dos vetores da consulta e artigos mais similares.}
+\end{figure}
+
+Na segunda busca, o sistema apresentou resultados consistentes com o tema proposto, retornando artigos sobre regularização e métodos \textit{Lasso} em regressões lineares. As visualizações tridimensionais mostraram a proximidade espacial entre os vetores, indicando que o \textit{PCA} manteve uma boa separabilidade sem perda significativa de coerência semântica.
+
+% CONCLUSÃO
+\section*{Conclusão}
+\addcontentsline{toc}{section}{Conclusão}
+O sistema desenvolvido demonstrou a aplicabilidade do TF-IDF na representação numérica de textos e a eficiência da similaridade de cosseno na identificação de artigos semanticamente relacionados.  
+A combinação dessas técnicas, aliada à visualização tridimensional, proporcionou uma análise intuitiva e fundamentada das relações entre documentos científicos, evidenciando o potencial das abordagens de Processamento de Linguagem Natural para a organização e recuperação de informações em bases textuais extensas.
+
+\end{document}
