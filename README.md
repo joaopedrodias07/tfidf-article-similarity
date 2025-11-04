@@ -70,4 +70,4 @@ Ele descreve detalhadamente os fundamentos teóricos, a implementação, os resu
 - João Pedro Dias
 - Estudante de Ciência de Dados — FATEC Rubens Lara (Santos/SP)
 - 📧 joaopedrodias.profissional@gmail.com 
-- 💼 linkedin.com/in/joaox07
+- 💼 https://www.linkedin.com/in/joaox07
