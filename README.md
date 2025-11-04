@@ -16,6 +16,7 @@ O sistema também gera uma **visualização 3D interativa** dos vetores da consu
 - **NumPy**
 - **Scikit-learn**
 - **Matplotlib**
+- **Plotly**
 - **Nltk**
 - **Re**
 
@@ -68,5 +69,5 @@ Ele descreve detalhadamente os fundamentos teóricos, a implementação, os resu
 
 - João Pedro Dias
 - Estudante de Ciência de Dados — FATEC Rubens Lara (Santos/SP)
-- 📧 dias07102006@gmail.com
+- 📧 joaopedrodias.profissional@gmail.com 
 - 💼 linkedin.com/in/joaox07
